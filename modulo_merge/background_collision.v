@@ -32,6 +32,42 @@ module background_collision (clk, rst, R_bg, G_bg, B_bg, ancora_bg_X, ancora_sp_
 	reg [11:0] G_sum_left = 12'b0;
 	reg [11:0] B_sum_left = 12'b0;
 
+        // Top
+    reg [11:0] R_sum_top_next;
+    reg [11:0] G_sum_top_next;
+    reg [11:0] B_sum_top_next;
+
+    reg [7:0] avg_R_top_next;
+    reg [7:0] avg_G_top_next;
+    reg [7:0] avg_B_top_next;
+
+    // Bottom
+    reg [11:0] R_sum_bottom_next;
+    reg [11:0] G_sum_bottom_next;
+    reg [11:0] B_sum_bottom_next;
+
+    reg [7:0] avg_R_bottom_next;
+    reg [7:0] avg_G_bottom_next;
+    reg [7:0] avg_B_bottom_next;
+
+    // Right
+    reg [11:0] R_sum_right_next;
+    reg [11:0] G_sum_right_next;
+    reg [11:0] B_sum_right_next;
+
+    reg [7:0] avg_R_right_next;
+    reg [7:0] avg_G_right_next;
+    reg [7:0] avg_B_right_next;
+
+    // Left
+    reg [11:0] R_sum_left_next;
+    reg [11:0] G_sum_left_next;
+    reg [11:0] B_sum_left_next;
+
+    reg [7:0] avg_R_left_next;
+    reg [7:0] avg_G_left_next;
+    reg [7:0] avg_B_left_next;
+
 
     always@(posedge clk)
     begin
@@ -100,13 +136,13 @@ module background_collision (clk, rst, R_bg, G_bg, B_bg, ancora_bg_X, ancora_sp_
                     min_B_top <= B_bg;
 
 
-                R_sum_top <= R_sum_top + R_bg;
-                G_sum_top <= G_sum_top + G_bg;
-                B_sum_top <= B_sum_top + B_bg;
+                R_sum_top <= R_sum_top_next;
+                G_sum_top <= G_sum_top_next;
+                B_sum_top <= B_sum_top_next;
                 
-                avg_R_top <= R_sum_top / 16;
-                avg_G_top <= G_sum_top / 16;
-                avg_B_top <= B_sum_top / 16;
+                avg_R_top <= avg_R_top_next;
+                avg_G_top <= avg_G_top_next;
+                avg_B_top <= avg_B_top_next;
                 
 
             end
@@ -132,13 +168,13 @@ module background_collision (clk, rst, R_bg, G_bg, B_bg, ancora_bg_X, ancora_sp_
                     min_B_bottom <= B_bg;
 
 
-                R_sum_bottom <= R_sum_bottom + R_bg;
-                G_sum_bottom <= G_sum_bottom + G_bg;
-                B_sum_bottom <= B_sum_bottom + B_bg;
+                R_sum_bottom <= R_sum_bottom_next;
+                G_sum_bottom <= G_sum_bottom_next;
+                B_sum_bottom <= B_sum_bottom_next;
                 
-                avg_R_bottom <= R_sum_bottom / 16;
-                avg_G_bottom <= G_sum_bottom / 16;
-                avg_B_bottom <= B_sum_bottom / 16;
+                avg_R_bottom <= avg_R_bottom_next;
+                avg_G_bottom <= avg_G_bottom_next;
+                avg_B_bottom <= avg_B_bottom_next;
                 
             end
 
@@ -162,13 +198,13 @@ module background_collision (clk, rst, R_bg, G_bg, B_bg, ancora_bg_X, ancora_sp_
                     min_B_right <= B_bg;
 
 
-                R_sum_right <= R_sum_right + R_bg;
-                G_sum_right <= G_sum_right + G_bg;
-                B_sum_right <= B_sum_right + B_bg;
+                R_sum_right <= R_sum_right_next;
+                G_sum_right <= G_sum_right_next;
+                B_sum_right <= B_sum_right_next;
                 
-                avg_R_right <= R_sum_right / 16;
-                avg_G_right <= G_sum_right / 16;
-                avg_B_right <= B_sum_right / 16;
+                avg_R_right <= avg_R_right_next;
+                avg_G_right <= avg_G_right_next;
+                avg_B_right <= avg_B_right_next;
                 
             end
 
@@ -193,13 +229,13 @@ module background_collision (clk, rst, R_bg, G_bg, B_bg, ancora_bg_X, ancora_sp_
                     min_B_left <= B_bg;
 
 
-                R_sum_left <= R_sum_left + R_bg;
-                G_sum_left <= G_sum_left + G_bg;
-                B_sum_left <= B_sum_left + B_bg;
+                R_sum_left <= R_sum_left_next;
+                G_sum_left <= G_sum_left_next;
+                B_sum_left <= B_sum_left_next;
                 
-                avg_R_left <= R_sum_left / 16;
-                avg_G_left <= G_sum_left / 16;
-                avg_B_left <= B_sum_left / 16;
+                avg_R_left <= avg_R_left_next;
+                avg_G_left <= avg_G_left_next;
+                avg_B_left <= avg_B_left_next;
                 
             end
      
@@ -207,4 +243,87 @@ module background_collision (clk, rst, R_bg, G_bg, B_bg, ancora_bg_X, ancora_sp_
 
     end
 
+    always @* begin
+        if (ancora_bg_X == ancora_sp_X && ancora_bg_Y >= ancora_sp_Y && ancora_bg_Y <= (ancora_sp_Y + 15))
+        begin
+            R_sum_top_next = R_sum_top + R_bg;
+            G_sum_top_next = G_sum_top + G_bg;
+            B_sum_top_next = B_sum_top + B_bg;
+
+            avg_R_top_next = R_sum_top / 16;
+            avg_G_top_next = G_sum_top / 16;
+            avg_B_top_next = B_sum_top / 16;
+
+        end else begin
+            R_sum_top_next = R_sum_top;
+            G_sum_top_next = G_sum_top;
+            B_sum_top_next = B_sum_top;
+
+            avg_R_top_next = R_sum_top;
+            avg_G_top_next = G_sum_top;
+            avg_B_top_next = B_sum_top;
+        end
+
+        
+        if (ancora_bg_X  == (ancora_sp_X + 15) && ancora_bg_Y >= ancora_sp_Y && ancora_bg_Y <= (ancora_sp_Y + 15))
+        begin
+            R_sum_bottom_next = R_sum_bottom + R_bg;
+            G_sum_bottom_next = G_sum_bottom + G_bg;
+            B_sum_bottom_next = B_sum_bottom + B_bg;
+
+            avg_R_bottom_next = R_sum_bottom / 16;
+            avg_G_bottom_next = G_sum_bottom / 16;
+            avg_B_bottom_next = B_sum_bottom / 16;
+
+        end else begin
+            R_sum_bottom_next = R_sum_bottom;
+            G_sum_bottom_next = G_sum_bottom;
+            B_sum_bottom_next = B_sum_bottom;
+
+            avg_R_bottom_next = R_sum_bottom;
+            avg_G_bottom_next = G_sum_bottom;
+            avg_B_bottom_next = B_sum_bottom;
+
+        end
+
+        if (ancora_bg_X >= ancora_sp_X && ancora_bg_X <= (ancora_sp_X + 15)  && ancora_bg_Y == (ancora_sp_Y + 15))
+        begin
+            R_sum_right_next = R_sum_right + R_bg;
+            G_sum_right_next = G_sum_right + G_bg;
+            B_sum_right_next = B_sum_right + B_bg;
+
+            avg_R_right_next = R_sum_right / 16;
+            avg_G_right_next = G_sum_right / 16;
+            avg_B_right_next = B_sum_right / 16;
+
+        end else begin
+            R_sum_right_next = R_sum_right;
+            G_sum_right_next = G_sum_right;
+            B_sum_right_next = B_sum_right;
+
+            avg_R_right_next = R_sum_right;
+            avg_G_right_next = G_sum_right;
+            avg_B_right_next = B_sum_right;
+        end
+
+        if (ancora_bg_X >= ancora_sp_X && ancora_bg_X <= (ancora_sp_X + 15)  && ancora_bg_Y == (ancora_sp_Y))
+        begin
+            R_sum_left_next = R_sum_left + R_bg;
+            G_sum_left_next = G_sum_left + G_bg;
+            B_sum_left_next = B_sum_left + B_bg;
+
+            avg_R_left_next = R_sum_left / 16;
+            avg_G_left_next = G_sum_left / 16;
+            avg_B_left_next = B_sum_left / 16;
+
+        end else begin
+            R_sum_left_next = R_sum_left;
+            G_sum_left_next = G_sum_left;
+            B_sum_left_next = B_sum_left;
+
+            avg_R_left_next = R_sum_left;
+            avg_G_left_next = G_sum_left;
+            avg_B_left_next = B_sum_left;
+        end
+    end
 endmodule
